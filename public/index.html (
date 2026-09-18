@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detector de Clics</title>
+    <style>
+        body { font-family: sans-serif; background: #0f172a; color: #fff; text-align: center; padding: 20px; }
+        .box { max-width: 500px; margin: 0 auto; background: #1e293b; padding: 20px; border-radius: 10px; }
+        button { background: #38bdf8; border: none; padding: 10px 20px; font-weight: bold; border-radius: 5px; cursor: pointer; }
+        .item { background: #334155; padding: 10px; margin: 10px 0; border-radius: 5px; display: flex; justify-content: space-between; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>🎬 Detector de Clics</h2>
+        <form id="f">
+            <input type="file" id="v" accept="video/*" required /><br><br>
+            <button type="submit">Analizar Video 🚀</button>
+        </form>
+        <div id="res" style="display:none; text-align:left; margin-top:20px;">
+            <h3>📍 Clics recomendados:</h3>
+            <div id="list"></div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('f').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('video', document.getElementById('v').files[0]);
+            alert('Analizando en la nube...');
+            const r = await fetch('/api/analizar', { method: 'POST', body: formData });
+            const data = await r.json();
+            const list = document.getElementById('list');
+            list.innerHTML = '';
+            data.puntos.forEach(p => {
+                list.innerHTML += `<div class="item"><span>⏱️ <b>${p.timestamp}</b></span> <span>🔥 ${p.porcentaje}%</span></div>`;
+            });
+            document.getElementById('res').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
